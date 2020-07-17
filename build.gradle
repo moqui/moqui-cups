@@ -27,7 +27,7 @@ def frameworkDir = file(moquiDir.absolutePath + '/framework')
 apply plugin: 'com.github.ben-manes.versions'
 buildscript {
   repositories { jcenter() }
-  dependencies { classpath 'com.github.ben-manes:gradle-versions-plugin:0.27.0' }
+  dependencies { classpath 'com.github.ben-manes:gradle-versions-plugin:0.28.0' }
 }
 dependencyUpdates.resolutionStrategy = { componentSelection { rules -> rules.all { ComponentSelection selection ->
     boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier -> selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/ }
@@ -50,7 +50,7 @@ dependencies {
     runtime 'org.cups4j:cups4j:0.7.6'
 
     // CUPS4J depends on Apache HTTP Client
-    runtime 'org.apache.httpcomponents:httpclient:4.5.10'
+    runtime 'org.apache.httpcomponents:httpclient:4.5.12'
 }
 
 task cleanLib(type: Delete) { delete fileTree(dir: projectDir.absolutePath+'/lib', include: '*') }
