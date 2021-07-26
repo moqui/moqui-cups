@@ -53,7 +53,7 @@ dependencies {
     runtime 'org.cups4j:cups4j:0.7.6'
 
     // CUPS4J depends on Apache HTTP Client
-    runtime 'org.apache.httpcomponents:httpclient:4.5.12'
+    runtime 'org.apache.httpcomponents:httpclient:4.5.13'
 }
 
 task cleanLib(type: Delete) { delete fileTree(dir: projectDir.absolutePath+'/lib', include: '*') }
