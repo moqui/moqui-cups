@@ -14,28 +14,11 @@
 
 apply plugin: 'groovy'
 
-// sourceCompatibility = '1.8'
-// targetCompatibility = '1.8'
-
 def componentNode = parseComponent(project)
 version = componentNode.'@version'
 def jarBaseName = componentNode.'@name'
 def moquiDir = projectDir.parentFile.parentFile.parentFile
 def frameworkDir = file(moquiDir.absolutePath + '/framework')
-
-// to run use "gradle dependencyUpdates"
-apply plugin: 'com.github.ben-manes.versions'
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url = "https://plugins.gradle.org/m2/" }
-    }
-  dependencies { classpath 'com.github.ben-manes:gradle-versions-plugin:0.28.0' }
-}
-dependencyUpdates.resolutionStrategy = { componentSelection { rules -> rules.all { ComponentSelection selection ->
-    boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier -> selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/ }
-    if (rejected) selection.reject('Release candidate')
-} } }
 
 repositories {
     flatDir name: 'localLib', dirs: frameworkDir.absolutePath + '/lib'
@@ -50,10 +33,10 @@ dependencies {
     implementation project(':framework')
 
     // CUPS4J - LGPL 3.0 - https://github.com/harwey/cups4j
-    runtimeOnly 'org.cups4j:cups4j:0.7.6'
+    runtimeOnly 'org.cups4j:cups4j:0.7.9'
 
     // CUPS4J depends on Apache HTTP Client
-    runtimeOnly 'org.apache.httpcomponents:httpclient:4.5.13'
+    runtimeOnly 'org.apache.httpcomponents:httpclient:4.5.14'
 }
 
 task cleanLib(type: Delete) { delete fileTree(dir: projectDir.absolutePath+'/lib', include: '*') }
@@ -63,13 +46,11 @@ jar {
     destinationDirectory = file(projectDir.absolutePath + '/lib')
     archiveBaseName = jarBaseName
 }
-task copyDependencies { doLast {
-    copy {
-        from (configurations.runtimeClasspath -
-              project(':framework').configurations.runtimeClasspath -
-              project(':framework').tasks.jar.archiveFile.get().asFile)
-        into file(projectDir.absolutePath + '/lib')
-    }
-} }
-copyDependencies.dependsOn cleanLib
+tasks.register('copyDependencies', Copy) {
+    dependsOn cleanLib
+    from (configurations.runtimeClasspath -
+          project(':framework').configurations.runtimeClasspath -
+          project(':framework').tasks.named('jar').get().archiveFile.get().asFile)
+    into file(projectDir.absolutePath + '/lib')
+}
 jar.dependsOn copyDependencies
