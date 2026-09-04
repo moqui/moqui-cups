@@ -148,7 +148,9 @@ along with this software (see the LICENSE.md file). If not, see
         <actions>
             <service-call name="org.moqui.impl.PrintServices.make#CupsClient"
                     in-map="[printJobId:printJobId]" out-map="context"/>
-            <if condition="!cupsClient.holdJob((int) printJob.jobId)"><then>
+            <service-call name="org.moqui.impl.PrintServices.make#CupsPrinter"
+                    in-map="[networkPrinterId:printJob.networkPrinterId]" out-map="context"/>
+            <if condition="!cupsClient.holdJob(cupsPrinter, (int) printJob.jobId)"><then>
                 <message>Could not hold job [${printJob.jobId}] on print server at [${networkPrinter.serverHost}] for PrintJob [${printJobId}]</message>
             </then><else>
                 <service-call name="update#moqui.basic.print.PrintJob" in-map="[printJobId:printJobId, statusId:'PtjPendingHeld']"/>
@@ -161,7 +163,9 @@ along with this software (see the LICENSE.md file). If not, see
         <actions>
             <service-call name="org.moqui.impl.PrintServices.make#CupsClient"
                     in-map="[printJobId:printJobId]" out-map="context"/>
-            <if condition="!cupsClient.releaseJob((int) printJob.jobId)"><then>
+            <service-call name="org.moqui.impl.PrintServices.make#CupsPrinter"
+                    in-map="[networkPrinterId:printJob.networkPrinterId]" out-map="context"/>
+            <if condition="!cupsClient.releaseJob(cupsPrinter, (int) printJob.jobId)"><then>
                 <message>Could not release job [${printJob.jobId}] on print server at [${networkPrinter.serverHost}] for PrintJob [${printJobId}]</message>
             </then><else>
                 <service-call name="update#moqui.basic.print.PrintJob" in-map="[printJobId:printJobId, statusId:'PtjPending']"/>
@@ -174,7 +178,9 @@ along with this software (see the LICENSE.md file). If not, see
         <actions>
             <service-call name="org.moqui.impl.PrintServices.make#CupsClient"
                     in-map="[printJobId:printJobId]" out-map="context"/>
-            <if condition="!cupsClient.cancelJob((int) printJob.jobId)"><then>
+            <service-call name="org.moqui.impl.PrintServices.make#CupsPrinter"
+                    in-map="[networkPrinterId:printJob.networkPrinterId]" out-map="context"/>
+            <if condition="!cupsClient.cancelJob(cupsPrinter, (int) printJob.jobId)"><then>
                 <message>Could not cancel job [${printJob.jobId}] on print server at [${networkPrinter.serverHost}] for PrintJob [${printJobId}]</message>
             </then><else>
                 <service-call name="update#moqui.basic.print.PrintJob" in-map="[printJobId:printJobId, statusId:'PtjCanceled']"/>

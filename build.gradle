@@ -33,10 +33,8 @@ dependencies {
     implementation project(':framework')
 
     // CUPS4J - LGPL 3.0 - https://github.com/harwey/cups4j
-    runtimeOnly 'org.cups4j:cups4j:0.7.9'
-
-    // CUPS4J depends on Apache HTTP Client
-    runtimeOnly 'org.apache.httpcomponents:httpclient:4.5.14'
+    // 0.8.x uses the JDK HTTP client (no Apache HttpClient)
+    runtimeOnly 'org.cups4j:cups4j:0.8.3'
 }
 
 task cleanLib(type: Delete) { delete fileTree(dir: projectDir.absolutePath+'/lib', include: '*') }
